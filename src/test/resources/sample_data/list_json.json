@@ -1,0 +1,34 @@
+[
+  {
+    "loanID": 82,
+    "loanAmount": 10,
+    "loanPurpose": "aperiam,",
+    "loanTerm": 61,
+    "applicantName": "laboris",
+    "applicantEmail": "mollit",
+    "applicantSSN": "sed",
+    "applicantIncome": 21,
+    "city": "Madrid",
+    "state": "consequuntur",
+    "zip": "proident,",
+    "applicantBirthDate": "2002-01-19",
+    "applicantEmployementStatus": "sunt",
+    "applicantLoanStatus": ""
+  },
+  {
+    "loanID": 22,
+    "loanAmount": 9,
+    "loanPurpose": "sit",
+    "loanTerm": 19,
+    "applicantName": "sit",
+    "applicantEmail": "minima",
+    "applicantSSN": "voluptas",
+    "applicantIncome": 1,
+    "city": "Madrid",
+    "state": "odit",
+    "zip": "eum",
+    "applicantBirthDate": "2006-08-11",
+    "applicantEmployementStatus": "non",
+    "applicantLoanStatus": "exercitation"
+  }
+]

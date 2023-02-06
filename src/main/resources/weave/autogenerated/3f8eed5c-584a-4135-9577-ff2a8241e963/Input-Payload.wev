@@ -1,0 +1,18 @@
+%dw 2.0
+
+type auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Payload = {|
+  batchJobInstanceId?: String, 
+  elapsedTimeInMillis?: Number, 
+  failedOnCompletePhase?: Boolean {"typeId": "boolean"}, 
+  failedOnInputPhase?: Boolean {"typeId": "boolean"}, 
+  failedOnLoadingPhase?: Boolean {"typeId": "boolean"}, 
+  failedRecords?: Number, 
+  inputPhaseException?: auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Payload, 
+  loadedRecords?: Number, 
+  loadingPhaseException?: auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Payload, 
+  onCompletePhaseException?: auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Payload, 
+  processedRecords?: Number, 
+  successfulRecords?: Number, 
+  totalRecords?: Number
+|} {"typeId": "com.mulesoft.mule.runtime.module.batch.api.BatchJobResult"}
+

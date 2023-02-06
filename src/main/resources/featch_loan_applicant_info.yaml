@@ -1,0 +1,4 @@
+query: "%dw 2.0
+  output text
+  ---
+  ' select * from loan_application; '"

@@ -1,0 +1,70 @@
+#%RAML 1.0
+baseUri: " "
+title: CustomerLoans
+description: This is the API used to get customer loan info
+version: 1.0
+uses:
+  resources:  resources.raml
+
+/loan-application:
+  post:
+
+    description: Submit a loan application
+    body:
+      application/json:
+        type: resources.loan-application
+        example:
+          !include Example/loan-application.raml       
+    responses:
+      201:
+        description: Loan application submitted successfully
+        body:
+          application/json:
+            example: 
+              {
+                "message": "After reviewing your application 
+            Loan Aproval/Deanil will be sent to your email  "
+              }
+
+      400:
+        description: Invalid loan application
+
+/loan-approval:
+  is:
+    - resources.client-enforcement
+  get:
+
+    description: Get loan approval/denial status
+    responses:
+      200:
+        description: Loan approval status retrieved
+        body:
+          application/json:
+            type: resources.loan-approval
+            example:
+              !include Example/loan-approval.raml
+      404:
+        description: Loan application not found
+
+/loan-repayment:
+  post:
+    description: Make a loan repayment
+    body:
+      application/json:
+
+    responses:
+      201:
+        description: Loan repayment made successfully
+      400:
+        description: Invalid loan repayment
+
+/loan-informations:
+  is:
+    - resources.client-enforcement
+  type:
+    resources.loan-information:
+  /{loan-id}:
+    type:
+      resources.loan-information:    
+    is:
+      - resources.client-enforcement

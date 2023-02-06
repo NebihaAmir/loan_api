@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_8eba3974_4bee_4557_bd72_5b66e4479afd_Output_Variables_array2 = Any
+

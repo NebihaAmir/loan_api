@@ -1,0 +1,11 @@
+#%RAML 1.0 Library
+usage: All avalibale API fragments src folder location
+
+types:
+  loan-application: !include Types/loan-application.raml
+  loan-approval: !include Types/loan-approval.raml
+  loan-information: !include Types/loan-information.raml
+traits:
+  client-enforcement: !include Traits/security.raml  
+resourceTypes:
+  loan-information: !include ResourceType/loan-information.raml

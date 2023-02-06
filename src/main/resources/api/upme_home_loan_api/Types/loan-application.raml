@@ -1,0 +1,40 @@
+#%RAML 1.0 DataType
+type: 
+  properties:
+    loanID:
+      type: integer
+      description: unique id for each loan applicant
+    loanAmount:
+      type: integer
+      minimum: 1000
+      maximum: 1000000
+      description: applicant required loan amount
+    loanPurpose:
+      type: string
+      enum: [Home improvement, Debt consolidation, Education, Business, Car purchase, Other]
+    loanTerm:
+        type: number
+        minimum: 12
+        maximum: 120
+        description: applicant 
+    applicantName:
+        type: string
+        minLength: 2
+        description: applicant firstname and lastname
+    applicantEmail:
+        type: string
+        pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+    applicantIncome:
+        type: number
+        minimum: 0
+    applicantAddress:
+        type: array
+        description: applicant resedent address
+    applicantBirthDate:
+        type: date-only
+        description: applicant birth date address
+    applicantEmployementStatus:
+        type: string
+        description: applicant employemnt status 
+          
+

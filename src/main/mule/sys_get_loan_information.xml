@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="23271be5-643f-4c0f-a3de-a10b63955e5f" file="featch_loan_applicant_info.yaml" />
+	<sub-flow name="sys_get_all_loanApplicant" doc:id="3f8eed5c-584a-4135-9577-ff2a8241e963" >
+		<db:select doc:name="select loan_applicant" doc:id="fd961d52-249f-4f48-b8f7-f2dd45b5eaf6" config-ref="Database_Config">
+			<db:sql><![CDATA[${db-config.fetch_applicants_query}]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="365c9ac9-3e20-4b10-a7d1-f29e4609a69b">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="sys_get_loan_informationSub_Flow" doc:id="bf3fe25f-3158-4170-822b-cc24a0f08d3f" >
+		<set-variable value="#[attributes.uriParams.'loan-id']" doc:name="applicant loan-id" doc:id="0b380881-2bb0-4723-9860-01fa3e04f323" variableName="loan-id"/>
+		<db:select doc:name="Select" doc:id="6aca18df-7a96-4a09-bb3c-d90eacb9f289" config-ref="Database_Config">
+			<db:sql ><![CDATA[${db-config.fetch_applicant_query}]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="8e6dfeb9-dde7-4a1a-9ffd-ed7aaf24279f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

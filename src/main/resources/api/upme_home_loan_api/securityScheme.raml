@@ -1,0 +1,23 @@
+#%RAML 1.0
+title: Loan API
+securitySchemes:
+  oauth_2_0:
+    type: OAuth 2.0
+    settings:
+      authorizationUri: https://oauth.provider.com/auth
+      accessTokenUri: https://oauth.provider.com/token
+      authorizationGrants: [authorization_code]
+      scopes:
+      loan_info: Access to loan information
+      
+      type: OAuth 2.0
+      describedBy:
+      headers:
+        Authorization:
+          type: string
+          description: Used to send a valid OAuth 2 token.
+      responses:
+        401:
+          description: Bad or expired token. This can happen if the user logs out or if the token expires. To fix, you should redirect the user to authenticate again.
+        403:
+          description: Forbidden. This can happen if the user does not have access to the requested resource.

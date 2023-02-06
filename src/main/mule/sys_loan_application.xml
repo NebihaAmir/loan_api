@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:amqp="http://www.mulesoft.org/schema/mule/amqp" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:sqs="http://www.mulesoft.org/schema/mule/sqs"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sqs http://www.mulesoft.org/schema/mule/sqs/current/mule-sqs.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/amqp http://www.mulesoft.org/schema/mule/amqp/current/mule-amqp.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="23853312-985e-48fa-86d0-e598b098ff6c" >
+		<http:listener-connection host="0.0.0.0" port="8086" />
+	</http:listener-config>
+
+
+	<flow name="sys_loan_applicationFlow" doc:id="7de5f8c3-a133-48fb-993d-f9656a47fd08" >
+		<ee:transform doc:name="Transform Message" doc:id="5b40c658-f4ba-4fe7-a538-998fd17c731d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[
+%dw 2.0
+//output text/plain
+output application/json
+---
+if (
+	
+	payload.loanAmount >= 1000 and payload.loanAmount <= 100000
+    and (payload.loanPurpose == "Home improvement" or payload.loanPurpose == "Debt consolidation" 
+    	or payload.loanPurpose == "Education" or payload.loanPurpose == "Business"
+    )
+    and (payload.loanTerm >= 12 and payload.loanTerm <= 60)
+    and (payload.applicantName != null )
+    and (payload.applicantIncome >= 25000 and payload.applicantIncome <= 200000)
+       and (payload.applicantSSN != null and (payload.applicantSSN matches /^\d{3}-\d{2}-\d{4}$/)  )
+    
+     and (payload.applicantEmail != null and (payload.applicantEmail matches /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)  )
+    and (payload.applicantAddress != null and payload.applicantAddress.size() != 0)
+    and (payload.applicantBirthDate != null and (payload.applicantBirthDate matches /^\d{4}-\d{2}-\d{2}$/)  )
+    and (payload.applicantEmployementStatus == "Employed" or
+    	payload.applicantEmployementStatus == "Self-Employeed"
+    )
+    
+    )
+
+    
+    	{
+           applicant_payload : payload,
+            status : "valid data"
+        }
+    	
+    
+	
+else
+      
+    	{
+            payload : payload,
+            status : "Invalid data"
+        }
+    	
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="#[payload.status]" doc:name="validationResult" doc:id="39a854f0-6faa-4afb-b21d-039b4dd01f34" variableName="validationResult" />
+		<logger level="INFO" doc:name="Logger" doc:id="b414d66b-9022-4c4f-b16e-8655add5f5a3" message="#[payload]"/>
+		<choice doc:name="Choice" doc:id="36799017-71e6-401f-a014-e9f034853fda" >
+			<when expression='#[payload.status == "valid data"]'>
+				<logger level="INFO" doc:name="Logger" doc:id="78036162-7bc1-4e0c-aa71-28fcfbb4b639" message="#[payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="b2bb3e98-abe2-4cf7-9d0e-4665f97a55fc">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+  {
+	loanAmount: payload.applicant_payload.loanAmount,
+	loanPurpose: payload.applicant_payload.loanPurpose,
+	loanTerm: payload.applicant_payload.loanTerm,
+	applicantName: payload.applicant_payload.applicantName,
+	applicantEmail: payload.applicant_payload.applicantEmail,
+	applicantSSN: payload.applicant_payload.applicantSSN, 
+	applicantIncome: payload.applicant_payload.applicantIncome,
+	city: payload.applicant_payload.applicantAddress[0].city,
+	state: payload.applicant_payload.applicantAddress[0].state,
+	zip: payload.applicant_payload.applicantAddress[0].zip,
+	applicantBirthDate: payload.applicant_payload.applicantBirthDate,
+	applicantEmployementStatus: payload.applicant_payload.applicantEmployementStatus
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="903a597e-692e-4aa5-846f-9ffbd10d4091" message="#[payload]" />
+				<try doc:name="Try" doc:id="9b7e5e3e-ccbd-44ea-81b3-a3b38be96821" >
+					<db:insert doc:name="Insert" doc:id="a5863803-dd3e-4c43-b234-8a681c2e40aa" config-ref="Database_Config">
+					<db:sql><![CDATA[INSERT INTO loan_application (loanAmount, loanPurpose, 
+loanTerm, applicantName, applicantEmail, applicantIncome, applicantSSN,
+city, state, zip, applicantBirthDate, applicantEmployementStatus)
+VALUES (:loanAmount, :loanPurpose, 
+:loanTerm, :applicantName, :applicantEmail, :applicantIncome, :applicantSSN, 
+:city, :state, :zip,
+ :applicantBirthDate, :applicantEmployementStatus)
+]]></db:sql>
+					<db:input-parameters><![CDATA[#[payload]]]></db:input-parameters>
+				</db:insert>
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b31f8620-e197-4b63-b7d1-6269f79f979c" >
+<!-- [STUDIO:"Publish"]							<amqp:publish doc:name="Publish" doc:id="0482621f-0f3b-439c-b109-9c0454511b60" config-ref="AMQP_Config" exchangeName="loan-applicant">
+							</amqp:publish> [STUDIO] -->
+							<set-payload value="Error " doc:name="Set Payload" doc:id="99a38cd2-2130-4d47-97a3-351998c51d6b" />
+						</on-error-continue>
+					</error-handler>
+				</try>
+			</when>
+			<otherwise>
+				<set-payload value="Error from Def" doc:name="Set Payload" doc:id="13a12421-8b0f-466d-a0e0-2bba43a88f5e" />
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

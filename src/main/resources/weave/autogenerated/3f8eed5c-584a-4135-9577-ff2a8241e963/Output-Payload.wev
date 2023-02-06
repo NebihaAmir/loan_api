@@ -1,0 +1,9 @@
+%dw 2.0
+
+type auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Output_Payload = {
+  approval_date: String, 
+  approval_status: String, 
+  application_id: String, 
+  _?: Any
+}
+

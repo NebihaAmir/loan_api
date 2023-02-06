@@ -1,0 +1,16 @@
+  {"loanAmount": 5000,
+  "loanPurpose": "Home improvement",
+  "loanTerm": 36,
+  "applicantName": "John Doe",
+  "applicantEmail": "john.doe@example.com",
+  "applicantIncome": 75000,
+  "applicantAddress": [
+    {
+      "city": "NewYork",
+      "state": "Buffalo",
+      "zip": "20409"
+    }
+  ],
+  "applicantBirthDate": "1999-06-15",
+  "applicantEmployementStatus": "Self-Employeed"
+}

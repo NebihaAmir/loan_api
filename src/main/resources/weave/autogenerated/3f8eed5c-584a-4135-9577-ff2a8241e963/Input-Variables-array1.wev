@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Variables_array1 = Array<{|  loanID: Number,   loanAmount: Number,   loanPurpose: String,   loanTerm: Number,   applicantName: String,   applicantEmail: String,   applicantSSN: String,   applicantIncome: Number,   city: String,   state: String,   zip: String,   applicantBirthDate: Date,   applicantEmployementStatus: String,   applicantLoanStatus: String|}>
+

@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_3f8eed5c_584a_4135_9577_ff2a8241e963_Input_Variables_array2 = Any
+

@@ -1,0 +1,9 @@
+db-config:
+  url: "localhost"
+  username: "root"
+  password: "root@123"
+  port: "3306"
+  name: "upMe_loan_api"
+  fetch_applicants_query: select * from loan_application; 
+  fetch_applicant_query: select * from loan_application where loanID = #[vars.loan-id]; 
+

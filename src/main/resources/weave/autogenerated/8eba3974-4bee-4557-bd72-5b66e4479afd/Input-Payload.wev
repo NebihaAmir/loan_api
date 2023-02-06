@@ -1,0 +1,15 @@
+%dw 2.0
+
+type auto_8eba3974_4bee_4557_bd72_5b66e4479afd_Input_Payload = {|
+  loan_applicant: {|
+    loanId: 1 | 2, 
+    name: "john.doe@example.com" | "john.smith@example.com", 
+    loanAmount: 5000 | 7000, 
+    applicantIncome: 75000 | 85000, 
+    applicantEmployementStatus: String, 
+    loanPurpose: "Home improvement" | "Education", 
+    loanApplicantID*: 1 | 2, 
+    creditScore*: String
+  |}
+|} | {|  |}
+

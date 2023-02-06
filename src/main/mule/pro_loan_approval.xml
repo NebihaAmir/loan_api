@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="cef0cf1e-0f5c-4ddd-9864-37f8ee7f36e1" >
+		<http:request-connection host="jsonplaceholder.typicode.com" />
+	</http:request-config>
+	<flow name="Pro_Approve_or_Deny_loanApplicant_request_flow" doc:id="7f217293-1163-4b85-a4f9-294c38cd8287" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="499c2d9f-bf22-40fb-824b-a6dc68ab9e45" >
+			<route >
+				<db:select doc:name="Select" doc:id="09a22d0c-dbce-4421-862e-82206c035fb1" config-ref="Database_Config">
+			<db:sql><![CDATA[ select * from loan_application where applicantLoanStatus = "N/A";]]></db:sql>
+		</db:select>
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]" doc:name="Set Variable" doc:id="15ccea48-5ddc-4b80-a9ad-8a84e8e7700e" variableName="array1"/>
+			</route>
+			<route >
+				<http:request method="GET" doc:name="Request" doc:id="d1869c60-6303-4fa0-8ee9-e69b6e39197f" config-ref="HTTP_Request_configuration" path="/users" />
+				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]" doc:name="Set Variable" doc:id="73d7acc2-7740-49f7-badc-6f4a7cfc495d" variableName="array2"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="0c4a8cae-9b95-4608-a98e-f33fa2c63fe6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var array1 = [
+      {
+    "applicantEmail": "john.doe@example.com",
+    "zip": "20409",
+    "loanTerm": 36,
+    "applicantSSN": "345-78-7665",
+    "applicantIncome": 75000,
+    "city": "NewYork",
+    "loanAmount": 5000,
+    "applicantBirthDate": "1999-06-15T00:00:00",
+    "loanPurpose": "Home improvement",
+    "applicantLoanStatus": "N/A",
+    "applicantEmployementStatus": "Self-Employeed",
+    "applicantName": "John Doe",
+    "state": "Buffalo",
+    "loanID": 1
+  }, 
+    {
+    "applicantEmail": "john.smith@example.com",
+    "zip": "40409",
+    "loanTerm": 48,
+    "applicantSSN": "345-78-9965",
+    "applicantIncome": 16000,
+    "city": "California",
+    "loanAmount": 7000,
+    "applicantBirthDate": "1997-04-11T00:00:00",
+    "loanPurpose": "Education",
+    "applicantLoanStatus": "N/A",
+    "applicantEmployementStatus": "Self-Employeed",
+    "applicantName": "John Smith",
+    "state": "San Francisco",
+    "loanID": 2
+  },
+    {
+    "applicantEmail": "john.smith@example.com",
+    "zip": "40409",
+    "loanTerm": 48,
+    "applicantSSN": "345-78-9965",
+    "applicantIncome": 10000,
+    "city": "California",
+    "loanAmount": 7000,
+    "applicantBirthDate": "1997-04-11T00:00:00",
+    "loanPurpose": "Education",
+    "applicantLoanStatus": "N/A",
+    "applicantEmployementStatus": "Self-Employeed",
+    "applicantName": "John Smith",
+    "state": "San Francisco",
+    "loanID": 3
+  }
+
+]
+var array2 =  [
+      {
+    "id": 1,
+    "name": "Leanne Graham",
+    "username": "Bret",
+    "email": "Sincere@april.biz",
+    "creditScore": "High",
+    "address": {
+      "street": "Kulas Light",
+      "suite": "Apt. 556",
+      "city": "Gwenborough",
+      "zipcode": "92998-3874",
+      "geo": {
+        "lat": "-37.3159",
+        "lng": "81.1496"
+      }
+    },
+    "phone": "1-770-736-8031 x56442",
+    "website": "hildegard.org",
+    "company": {
+      "name": "Romaguera-Crona",
+      "catchPhrase": "Multi-layered client-server neural-net",
+      "bs": "harness real-time e-markets"
+      
+    }
+  }, 
+        {
+    "id": 2,
+    "name": "Leanne Graham",
+    "username": "Bret",
+    "email": "Sincere@april.biz",
+    "creditScore": "High",
+    "address": {
+      "street": "Kulas Light",
+      "suite": "Apt. 556",
+      "city": "Gwenborough",
+      "zipcode": "92998-3874",
+      "geo": {
+        "lat": "-37.3159",
+        "lng": "81.1496"
+      }
+    },
+    "phone": "1-770-736-8031 x56442",
+    "website": "hildegard.org",
+    "company": {
+      "name": "Romaguera-Crona",
+      "catchPhrase": "Multi-layered client-server neural-net",
+      "bs": "harness real-time e-markets"
+      
+    }
+  },
+   {
+    "id": 3,
+    "name": "Leanne Graham",
+    "username": "Bret",
+    "email": "Sincere@april.biz",
+    "creditScore": "Medium",
+    "address": {
+      "street": "Kulas Light",
+      "suite": "Apt. 556",
+      "city": "Gwenborough",
+      "zipcode": "92998-3874",
+      "geo": {
+        "lat": "-37.3159",
+        "lng": "81.1496"
+      }
+    },
+    "phone": "1-770-736-8031 x56442",
+    "website": "hildegard.org",
+    "company": {
+      "name": "Romaguera-Crona",
+      "catchPhrase": "Multi-layered client-server neural-net",
+      "bs": "harness real-time e-markets"
+      
+    }
+  }
+
+]
+---
+
+array1 map (loanApplicantRequestPayload) ->
+    {
+        loanId : loanApplicantRequestPayload.loanID as Number,
+        name: loanApplicantRequestPayload.applicantEmail,
+        loanAmount: loanApplicantRequestPayload.loanAmount,
+        applicantIncome: loanApplicantRequestPayload.applicantIncome,
+        applicantEmployementStatus: loanApplicantRequestPayload.applicantEmployementStatus, 
+        loanPurpose: loanApplicantRequestPayload.loanPurpose,
+       (array2 filter ($.id contains loanApplicantRequestPayload.loanID) 
+            map (loanApplicantActualPayload) -> {
+                loanApplicantID : loanApplicantActualPayload.id,
+                creditScore : loanApplicantActualPayload.creditScore
+				
+            }
+        )
+    }
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<batch:job jobName="pro_loan_approvalBatch_Job" doc:id="31ab1feb-ec95-4d2a-b7a8-fbbe59d6ed5a">
+			<batch:process-records>
+				<batch:step name="Batch_Step" doc:id="555c3eb4-876a-434e-b852-cfd8043904a9">
+					<ee:transform doc:name="Transform Message" doc:id="1d9235b3-f28b-415b-853f-b0378bc9f327">
+								<ee:message>
+									<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+if (
+	payload.loanApplicantID  != null 
+	and payload.creditScore != null and 
+	payload.applicantIncome != null
+	)
+	{
+		loan_applicant: payload
+		
+	}
+else {
+	
+	
+}]]></ee:set-payload>
+								</ee:message>
+							</ee:transform>
+					<set-variable value="#[payload.loan_applicant.loanId]" doc:name="loanId" doc:id="d57d0ff1-5480-42d2-9385-afb3d9457bd5" variableName="loanId"/>
+					<set-variable value="#[payload.loan_applicant.loanPurpose]" doc:name="loanPurpose" doc:id="a8abeed8-c733-4a3c-bf00-c1f67c2b9241" variableName="loanPurpose"/>
+					<flow-ref doc:name="Flow Reference" doc:id="6d6d8869-e14f-4fb1-a718-f5e53556c02e" name="pro_loan_approvalSub_Flow"/>
+				</batch:step>
+			</batch:process-records>
+		</batch:job>
+	</flow>
+	<sub-flow name="pro_loan_approvalSub_Flow" doc:id="8eba3974-4bee-4557-bd72-5b66e4479afd" >
+		<choice doc:name="Check loan purpose and update status of applicant" doc:id="8da0c546-f8ae-4074-9349-b4462f87d976" >
+			<when expression='#[vars.loanPurpose == "Home improvement"]' >
+				<set-payload value='#[%dw 2.0&#10;output application/java&#10;---&#10;&#10;&#10;if (payload.loan_applicant.creditScore == "High")&#10;    if (payload.loan_applicant.applicantIncome &gt; 60000)&#10;        message: "Eligible for Loan"&#10;    else&#10;      message:  "Not Eligible for Loan"&#10;else&#10;    message: "Not Eligible for Loan"]' doc:name="Home improvement" doc:id="52aee985-61b6-41ea-8ea0-e2fc2735e9de" />
+			</when>
+			<when expression='#[vars.loanPurpose == "Business"]'>
+				<set-payload value='#[%dw 2.0&#10;output application/java&#10;---&#10;&#10;if (payload.loan_applicant.creditScore == "High")&#10;    if (payload.loan_applicant.applicantIncome &gt; 12000)&#10;        message: "Eligible for Loan"&#10;    else&#10;      message:  "Not Eligible for Loan"&#10;else&#10;    message: "Not Eligible for Loan"]' doc:name="Business" doc:id="dd9bbfbf-e219-4678-9c79-f65a8ef9385c" />
+			</when>
+			<when expression='#[vars.loanPurpose == "Education"]'>
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;&#10;if (payload.loan_applicant.creditScore == "High" or payload.loan_applicant.creditScore == "Medium")&#10;    if (payload.loan_applicant.applicantIncome &gt; 30000)&#10;        message: "Eligible for Loan"&#10;    else&#10;       message: "Not Eligible for Loan"&#10;else&#10;    message: "Not Eligible for Loan"]' doc:name="Education" doc:id="12365059-e0d4-49c5-997a-26c224dd6a7c" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="unknown loan purpose" doc:id="ba6bc9ec-7e7c-4f90-880b-0412e5859f33" message="unknown loan purpose" />
+			</otherwise>
+		</choice>
+		<flow-ref doc:name="Refer to pro_loan_approval_or_denial_subFlow" doc:id="8e6aa778-9275-417d-8591-d9473f18c479" name="pro_loan_approval_or_denial_subFlow"/>
+	</sub-flow>
+	<sub-flow name="pro_loan_approval_or_denial_subFlow" doc:id="853fecf7-44a4-4791-ba7a-b4d1d558a2ce" >
+		<choice doc:name="Aprove or Deny Loan Applicant" doc:id="25e6c42a-0747-4228-86d1-db6f7152bb42">
+			<when expression='#[payload.message == "Eligible for Loan"]'>
+				<db:update doc:name="Approve_loanApplicant" doc:id="44ae98f8-6355-4467-8afe-ea0996c660f9" config-ref="Database_Config">
+			<db:sql><![CDATA[update loan_application set applicantLoanStatus = :applicantLoanStatus where loanID = :loanID]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	loanID: vars.loanID,
+	applicantLoanStatus: "Approved"
+}]]]></db:input-parameters>
+		</db:update>
+			</when>
+			<otherwise>
+				<db:update doc:name="Deny_loanApplicant" doc:id="1ff88c5a-5200-481d-819f-336cac5d8cef" config-ref="Database_Config">
+					<db:sql><![CDATA[update loan_application set applicantLoanStatus = :applicantLoanStatus where loanID = :loanID]]></db:sql>
+					<db:input-parameters><![CDATA[#[{
+	loanID: vars.loanID,
+	applicantLoanStatus: "Denied"
+}]]]></db:input-parameters>
+				</db:update>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>
